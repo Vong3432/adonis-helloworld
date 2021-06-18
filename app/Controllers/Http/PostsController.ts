@@ -1,25 +1,30 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Post from 'App/Models/Post'
 
+
 export default class PostsController {
     public async index({request}: HttpContextContract) {
-
         const posts = await Post
                             .query()
                             .preload('user')
                             .preload('forum');
         return posts;
     }
-    public async show({request, params}: HttpContextContract) {
+    public async show({bouncer, params, response}: HttpContextContract) {
         try {
-            const post = await Post.find(params.id);
+            const post = await Post.findOrFail(params.id);
+            
+            if(await bouncer.denies('viewPost', post))
+                throw "You are not allowed to view this post."
+
             if(post) {
                 await post.preload('user')
                 await post.preload('forum')
                 return post;
             }
+
         } catch(error) {
-            console.log(error)
+            return response.status(500).json({msg: error})
         }
     }
     public async update({auth, request, params}: HttpContextContract) {
