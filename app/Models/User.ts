@@ -22,7 +22,7 @@ export default class User extends BaseModel {
   public avatarUrl: string | null
 
   @column.date({
-    serialize: (value) => value.format('dd mm yyyy')
+    serialize: (value) => value ? value.format('dd mm yyyy') : null
   })
   public dob: DateTime
 

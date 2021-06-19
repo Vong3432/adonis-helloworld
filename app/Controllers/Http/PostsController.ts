@@ -14,8 +14,12 @@ export default class PostsController {
         try {
             const post = await Post.findOrFail(params.id);
             
-            if(await bouncer.denies('viewPost', post))
-                throw "You are not allowed to view this post."
+            // authorization via actions
+            // if(await bouncer.denies('viewPost', post))
+            //     throw "You are not allowed to view this post."
+
+            // authorization via policy
+            await bouncer.with('PostPolicy').authorize('view', post)
 
             if(post) {
                 await post.preload('user')
