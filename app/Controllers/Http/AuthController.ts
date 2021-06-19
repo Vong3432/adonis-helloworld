@@ -1,5 +1,6 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
+import Event from '@ioc:Adonis/Core/Event'
 
 export default class AuthController {
     public async login({request, auth}: HttpContextContract) {
@@ -8,6 +9,8 @@ export default class AuthController {
         const token = await auth.use("api").attempt(email, password, {
             expiresIn: "10 days"
         })
+
+        await Event.emit('new:user', {id: 1, email: email})
 
         return token.toJSON()
     }
