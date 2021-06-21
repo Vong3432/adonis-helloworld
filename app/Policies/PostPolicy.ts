@@ -2,14 +2,14 @@ import { BasePolicy } from '@ioc:Adonis/Addons/Bouncer'
 import Post from 'App/Models/Post';
 import User from 'App/Models/User';
 
-interface IPolicyAction {
-    [key: string]: {
-        err: string
-    }
+interface IPostActionInfo {
+    err: string
 }
 
-const unthorized: IPolicyAction = {
-    'view': {
+type PostAction = 'view'
+
+const unthorized: Record<PostAction, IPostActionInfo> = {
+    view: {
         err: 'You are not allowed to view.'
     }
 }
